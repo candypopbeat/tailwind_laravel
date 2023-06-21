@@ -1,66 +1,252 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# LaravelでのTailwindテストコード
+<br>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 使い方（下記２つのどちらか）
+- クローンしてLaravelを起動させる
+- クローンはせずに下記のドキュメント通りに進めてもOK
+<br>
 
-## About Laravel
+## Laravelのインストール
+```bash
+composer create-project laravel/laravel {tailwind_laravel}
+```
+<br>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Tailwindのインストール
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. Tailwindと関連ライブラリを同時にインストール
+    ```bash
+    npm install -D tailwindcss postcss autoprefixer
+    ```
+1. Tailwindの設定ファイル tailwind.config.js を作る
+    ```bash
+    npx tailwindcss init -p
+    ```
+1. /tailwind.config.jsに監視パスを追加する
+    ```diff
+    /** @type {import('tailwindcss').Config} */
+    module.exports = {
+      content: [
+    +    "./resources/**/*.blade.php",
+    +    "./resources/**/*.js",
+    +    "./resources/**/*.vue",
+      ],
+      theme: {
+        extend: {},
+      },
+      plugins: [],
+    }
+    ```
+1. /resources/css/app.cssにtailwind読込みを追加する
+    ```diff
+    +  /* Tailwind用 */
+    +  @tailwind base;
+    +  @tailwind components;
+    +  @tailwind utilities;
+    +  
+    +  /* 下記はテスト用にオリジナルCSS */
+    +  
+    +  /* フッターを最下部固定にするために */
+    +  html, body {
+    +    height: 100%;
+    +  }
+    +  
+    +  footer {
+    +    position: sticky; /* フッターを最下部固定にするために */
+    +    top: 100%; /* フッターを最下部固定にするために */
+    +    background-color: skyblue;
+    +    font-size: 1.3rem;
+    +    color: white;
+    +    padding: 1rem 0;
+    +    text-align: center;
+    +  }
+    ```
+<br>
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Bootstrap っぽくなる daisyUI をインストールする
 
-## Learning Laravel
+1. daisyUIをインストール
+    ```bash
+    npm i -D daisyui
+    ```
+1. /tailwind.config.jsに読み込み記述を追加する
+    ```diff
+    /** @type {import('tailwindcss').Config} */
+    export default {
+      content: [
+        "./resources/**/*.blade.php",
+        "./resources/**/*.js",
+        "./resources/**/*.vue",
+      ],
+      theme: {
+        extend: {},
+      },
+      plugins: [
+    +    require("daisyui")
+      ],
+    +  daisyui: {
+    +    themes: ["light", "dark", "cupcake", "retro"],
+    +    darkTheme: "dark",
+    +  },
+    }
+    ```
+<br>
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## テストする
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+1. /resources/views/welcome.blade.phpにVITEでCSSを読み込んで、Tailwindのクラスを使ってみるテストの準備をする
+    ```html!
+    <!DOCTYPE html>
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+    <!-- daisyUI の retro というテーマを指定している -->
+    <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="retro">
 
-## Laravel Sponsors
+    <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+      <!-- app.css に Tailwind も入っている -->
+      @vite('resources/css/app.css')
 
-### Premium Partners
+      <title>Tailwind CSS Test</title>
+    </head>
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+    <body>
 
-## Contributing
+      <!-- コンテナ -->
+      <div class="container mx-auto mb-10 pt-10">
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+        <!-- 見出し -->
+        <h1 class="text-base sp:text-lg tb:text-2xl pc:text-4xl mb-10">Tailwind CSS Test</h1>
 
-## Code of Conduct
+        <!-- ボタン -->
+        <button class="btn">Button</button>
+        <button class="btn btn-neutral">Neutral</button>
+        <button class="btn btn-primary">Button</button>
+        <button class="btn btn-secondary">Button</button>
+        <button class="btn btn-accent">Button</button>
+        <button class="btn btn-ghost">Button</button>
+        <button class="btn btn-link">Button</button>
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+        <!-- 水平線 -->
+        <div class="divider">Divider</div>
 
-## Security Vulnerabilities
+        <!-- モーダル -->
+        <button class="btn btn-secondary" onclick="my_modal_1.showModal()">open modal</button>
+        <dialog id="my_modal_1" class="modal">
+          <form method="dialog" class="modal-box">
+            <h3 class="font-bold text-lg">Hello!</h3>
+            <p class="py-4">Press ESC key or click the button below to close</p>
+            <div class="modal-action">
+              <button class="btn">Close</button>
+            </div>
+          </form>
+        </dialog>
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+      </div>
 
-## License
+      <!-- コンテナ -->
+      <div class="container mx-auto">
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+        <!-- フォントサイズ -->
+        <p class="text-sm ...">The quick brown fox ...</p>
+        <p class="text-base ...">The quick brown fox ...</p>
+        <p class="text-lg ...">The quick brown fox ...</p>
+        <p class="text-xl ...">The quick brown fox ...</p>
+        <p class="text-2xl ...">The quick brown fox ...</p>
+
+      </div>
+
+      <!-- フッター -->
+      <footer class="mt-10">
+        &copy; Tailwind Test.
+      </footer>
+
+    </body>
+
+    </html>
+    ```
+1. /tailwind.config.js をテスト用に書き換える
+    ```javascript
+    /** @type {import('tailwindcss').Config} */
+    export default {
+      content: [
+        "./resources/**/*.blade.php",
+        "./resources/**/*.js",
+        "./resources/**/*.vue",
+      ],
+      theme: {
+        // デフォルト値の継承と上書き
+        extend: {
+          // ブレークポイントのデフォルト値
+          // screens: {
+          //   sm:	"640px",
+          //   md:	"768px",
+          //   lg:	"1024px",
+          //   xl:	"1280px",
+          //   '2xl': "1536px"
+          // }
+        },
+        // 新規ブレークポイント、デフォルトは効かなくなる
+        screens: {
+          sp: "400px",
+          tb: "768px",
+          pc: "1280px",
+        },
+      },
+      plugins: [
+        // テーマのdaisyUI読込
+        require("daisyui"),
+        function({addComponents}) {
+          addComponents({
+            // コンテナサイズのデフォルト値
+            // ".container": {
+            //   maxWidth: "100%",
+            //   "@screen sm": {
+            //     maxWidth: "640px",
+            //   },
+            //   "@screen md": {
+            //     maxWidth: "768px",
+            //   },
+            //   "@screen lg": {
+            //     maxWidth: "1024px",
+            //   },
+            //   "@screen xl": {
+            //     maxWidth: "1280px",
+            //   },
+            //   "@screen 2xl": {
+            //     maxWidth: "1536px",
+            //   },
+            // }
+
+            // 新規コンテナサイズ
+            ".container": {
+              maxWidth: "95%",
+              "@screen sp": {
+                maxWidth: "80%",
+              },
+              "@screen tb": {
+                maxWidth: "768px",
+              },
+              "@screen pc": {
+                maxWidth: "1200px"
+              }
+            }
+          })
+        },
+      ],
+      daisyui: {
+        themes: ["light", "dark", "cupcake", "retro"],
+        darkTheme: "dark",
+      },
+    }
+    ```
+1. サーバーとコンパイラーを起動してテストを実行する
+    ```bash!
+    # Laravelサーバー起動
+    php artisan serve
+
+    # コンパイラー起動
+    npm run dev
+    ```
