@@ -39,27 +39,27 @@ composer create-project laravel/laravel {tailwind_laravel}
     ```
 1. /resources/css/app.cssにtailwind読込みを追加する
     ```diff
-    +  /* Tailwind用 */
-    +  @tailwind base;
-    +  @tailwind components;
-    +  @tailwind utilities;
-    +  
-    +  /* 下記はテスト用にオリジナルCSS */
-    +  
-    +  /* フッターを最下部固定にするために */
-    +  html, body {
-    +    height: 100%;
-    +  }
-    +  
-    +  footer {
-    +    position: sticky; /* フッターを最下部固定にするために */
-    +    top: 100%; /* フッターを最下部固定にするために */
-    +    background-color: skyblue;
-    +    font-size: 1.3rem;
-    +    color: white;
-    +    padding: 1rem 0;
-    +    text-align: center;
-    +  }
+      /* Tailwind用 */
+      @tailwind base;
+      @tailwind components;
+      @tailwind utilities;
+      
+      /* 下記はテスト用にオリジナルCSS */
+      
+      /* フッターを最下部固定にするために */
+      html, body {
+        height: 100%;
+      }
+      
+      footer {
+        position: sticky; /* フッターを最下部固定にするために */
+        top: 100%; /* フッターを最下部固定にするために */
+        background-color: skyblue;
+        font-size: 1.3rem;
+        color: white;
+        padding: 1rem 0;
+        text-align: center;
+      }
     ```
 <br>
 
